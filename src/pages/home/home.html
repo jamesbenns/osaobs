@@ -1,18 +1,37 @@
-<ion-header>
-  <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>Home</ion-title>
-  </ion-navbar>
-</ion-header>
+<ion-content>
+  <ion-fab top righter>
+    <button (click)="report()" ion-fab color="danger"><ion-icon name="add"></ion-icon></button>
+  </ion-fab>
 
-<ion-content padding>
-  <h3>Ionic Menu Starter</h3>
+  <ion-fab top right>
+    <button ion-fab menuToggle="right"><ion-icon name="options"></ion-icon></button>
+  </ion-fab>
 
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will show you the way.
-  </p>
+  <ion-fab top left>
+    <button ion-fab color="light" menuToggle="left"><ion-icon name="menu"></ion-icon></button>
+  </ion-fab>
 
-  <button ion-button secondary menuToggle>Toggle Menu</button>
+  <div #map id="map"></div>
+  <div style="height: 100%; width: 30px; position: absolute; top: 0px;"></div>
+
+
+<ion-grid no-padding>
+  <ion-row>
+
+      <ion-col col-12 col-md-6 col-lg-4 *ngFor="let item of data | toArray">
+          <ion-card style="border-radius: 10px;">
+            <ion-item (click)="viewSighting(item)">
+              <h1>{{item.species}}</h1><ion-icon name="arrow-forward" item-end></ion-icon>
+            </ion-item>
+            <div *ngIf="item.img" class="image" (click)="photoViewer.show(item.img, item.species + ' spotted near ' + item.location)" [ngStyle]="{backgroundImage: 'url(' + item.img + ')'}"></div>
+            <ion-item (click)="viewSighting(item)">
+              <span item-left>{{item.date | timeAgo}}</span>
+              <span item-right style="color: #488aff;"><ion-icon color="primary" name="pin"></ion-icon> {{item.location}}</span>
+            </ion-item>
+          </ion-card>  
+      </ion-col>  
+
+  </ion-row>
+</ion-grid>
+
 </ion-content>

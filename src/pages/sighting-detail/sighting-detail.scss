@@ -1,0 +1,29 @@
+page-sighting-detail {
+
+    .gm-style-cc{
+        display: none;
+    }
+    #map {
+        width: 100%;
+        height: 100%;
+    }
+    
+    .scroll-content{
+        margin-top: 0px !important;
+        background: #90d6ff;
+    }
+
+    .toolbar-background{
+        background: none !important;
+        border: none !important;
+    }
+
+    .item-ios, .item-md{
+        background: none;
+    }
+
+    ion-grid{
+        height: 100%;
+    }
+
+}
