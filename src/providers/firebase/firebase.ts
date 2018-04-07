@@ -39,24 +39,25 @@ export class FirebaseProvider {
   }
 
   addSighting(data){
-    let key = this.database.ref('sightings/').push().key;    
-      return new Promise((resolve, reject)=>{
-        if(data.img){
-          this.storage.ref().child(key).putString(data.img, 'data_url').then( snapshot => {
-            data.img = snapshot.downloadURL;
-            resolve();
-            return this.database.ref('sightings/' + key).set(data);
-          }, error => {
-            reject(error)
-          });
-        } else{
-          this.database.ref('sightings/' + key).set(data).then( success => {
-            resolve();
-          }, error => {
-            reject(error);
-          })          
-        }
-      })
+    let key = this.database.ref('sightings/').push().key; 
+    data.key = key;   
+    return new Promise((resolve, reject)=>{
+      if(data.img){
+        this.storage.ref().child(key).putString(data.img, 'data_url').then( snapshot => {
+          data.img = snapshot.downloadURL;
+          resolve();
+          return this.database.ref('sightings/' + key).set(data);
+        }, error => {
+          reject(error)
+        });
+      } else{
+        this.database.ref('sightings/' + key).set(data).then( success => {
+          resolve();
+        }, error => {
+          reject(error);
+        })          
+      }
+    })
   }
 
 }

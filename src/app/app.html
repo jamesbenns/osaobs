@@ -2,38 +2,52 @@
   <ion-content>
       <div style="padding: 50px;">
 
-        <img style="width: 100%;" src="./assets/img/osaobs.jpg"/>
+        <img style="width: 100%;" src="./assets/img/logo.jpg"/>
 
       </div>
-      <ion-list>
-            <button ion-item>
-                Information
+      <ion-list style="margin-bottom: 2px;" radio-group [(ngModel)]="language.english" (ionChange)="saveLanguage()">
+            <button ion-item (click)="openLink('https://www.osaecology.org/')">
+                {{language.english ? "About us" : "Sobre nosotros"}}
+                <ion-icon color="primary" name="open" item-end></ion-icon>
             </button>
-              <button ion-item>
-                  Species Guide
-              </button>
-            <button ion-item>
-                Signup/Login
+            <button ion-item (click)="openSpeciesGuide()">
+                {{language.english ? "Species guide" : "Guía de especies"}}
+                <ion-icon name="information-circle" item-end></ion-icon>
+            </button>
+            <button ion-item (click)="openMySightings()">
+                {{language.english ? "My sightings" : "mis avistamientos"}}
+                <ion-icon name="contact" item-end></ion-icon>
             </button>
 
-            <button ion-item color="danger">
-                    Report Sighting
-                </button>
-                <button ion-item style="color: #fff;" color="secondary">
-                      Donate with <img style="height: 15px; margin-left: 10px;" src="./assets/img/paypal.png"/>
-                  </button>
-
-      <ion-item>
-          <ion-label>English</ion-label>
-          <ion-radio></ion-radio>
-      </ion-item>
-  
-      <ion-item>
-          <ion-label>Espanol</ion-label>
-          <ion-radio></ion-radio>
-      </ion-item>
-
+            <button ion-item (click)="openLink('https://www.facebook.com/osaecology/')">
+                {{ language.english ? "Find us on Facebook" : "Síguenos en Facebook"}}
+                <ion-icon name="logo-facebook" style="color: #3b5998;" item-end></ion-icon>
+            </button>
+            <!-- <button ion-item (click)="openLink('https://www.instagram.com/osaecology')">
+                Find us on Instagram
+                <ion-icon name="logo-instagram" style="color: #d32e87;" item-end></ion-icon>
+            </button> -->
+            <ion-item-divider color="light">
+                {{language.english ? "Language" : "Idioma"}}
+            </ion-item-divider>
+            <ion-item>
+                <ion-label>English</ion-label>
+                <ion-radio checked="true" [value]="true"></ion-radio>
+            </ion-item>
+            <ion-item>
+                <ion-label>Español</ion-label>
+                <ion-radio [value]="false"></ion-radio>
+            </ion-item>
       </ion-list>
+      <ion-grid padding style="position: absolute; bottom: 0;">                
+        <button ion-button color="danger" icon-right (click)="reportSighting()">
+            {{language.english ? "Report sighting" : "Enviar avistamiento"}}
+            <ion-icon name="camera"></ion-icon>
+        </button>
+        <button ion-button style="color: #012268;" color="secondary" (click)="openLink('https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=osaecology%40Gmail%2ecom&lc=GB&item_name=OSA%20Ecology&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHostedGuest')">
+            {{language.english ? "Donate with" : "Donar con"}} <img style="height: 15px; margin-left: 10px;" src="./assets/img/paypal.png"/>
+        </button>
+        </ion-grid>
   </ion-content>
 </ion-menu>
 

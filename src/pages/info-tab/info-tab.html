@@ -1,0 +1,16 @@
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title></ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+  <div class="image" (click)="photoViewer.show(species.photo, species.binomialName, {share: false})" [ngStyle]="{backgroundImage: 'url(' + species.photo + ')'}"></div>
+  <ion-grid padding>
+    <h2>{{ language.english ? species.name : species.spanishName }}</h2>
+    <p style="margin: 0;"><b><i>({{ species.binomialName }})</i></b></p>
+    <p>{{ language.english ? species.description : species.spanishDescription }}</p>
+  </ion-grid>
+</ion-content>

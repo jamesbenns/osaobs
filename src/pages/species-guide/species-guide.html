@@ -1,0 +1,21 @@
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title>{{ title }}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <ion-list>
+    <button class="sub-cat" [navPush]="subCategoryPage" [navParams]="{subCategory: category}" ion-item *ngFor="let category of categories">
+      {{ language.english ? category.name : category.spanishName }}
+    </button>  
+    <button ion-item *ngFor="let item of species" [navPush]="speciesTabsPage" [navParams]="item">
+      <div item-start class="square-image" [ngStyle]="{backgroundImage: 'url(' + item.photo + ')'}"></div>
+      <h2>{{ language.english ? item.name : item.spanishName }}</h2>
+      <h3>{{ item.binomialName }}</h3>
+    </button>  
+  </ion-list>
+</ion-content>

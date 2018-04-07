@@ -1,16 +1,13 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, AlertController, LoadingController, ModalController } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { Http } from '@angular/http';
 import { FirebaseProvider } from '../../providers/firebase/firebase';
-
-/**
- * Generated class for the ReportSightingPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { SpeciesModalPage } from '../species-modal/species-modal';
+import { LocationPickerPage } from '../location-picker/location-picker';
+import { Device } from '@ionic-native/device';
+import { LanguageProvider } from '../../providers/language/language';
 
 @Component({
   selector: 'page-report-sighting',
@@ -18,8 +15,21 @@ import { FirebaseProvider } from '../../providers/firebase/firebase';
 })
 export class ReportSightingPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, private geolocation: Geolocation, private http: Http, private camera: Camera, public loadingCtrl: LoadingController, public firebase: FirebaseProvider) {
-  }
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public alertCtrl: AlertController,
+    private geolocation: Geolocation,
+    private http: Http,
+    private camera: Camera,
+    public loadingCtrl: LoadingController,
+    public firebase: FirebaseProvider,
+    public modalCtrl: ModalController,
+    private device: Device,
+    public language: LanguageProvider
+  ) {}
+
+  today = new Date().toISOString();
 
   options: CameraOptions = {
     quality: 20,
@@ -30,21 +40,37 @@ export class ReportSightingPage {
   }
 
   sightingData = {
-    species: "Test Sighting",
+    species: "",
     lat: "",
     lng: "",
     img: "",
-    date: "",
-    location: ""
+    date: new Date().toISOString(),
+    location: "",
+    spanishSpecies: "",
+    uuid: this.device.uuid
   }
 
   picture:string = "./assets/img/placeholder.png";  
 
   loading;
 
+  selectSpecies(){
+    let modal = this.modalCtrl.create(SpeciesModalPage);
+    modal.onDidDismiss(data => {
+      if(data) {
+        this.sightingData.species = data.name;
+        this.sightingData.spanishSpecies = data.spanishName;
+      }
+      else {
+        this.sightingData.species = "";
+        this.sightingData.spanishSpecies = "";
+      }
+    });
+    modal.present();
+  }
+
   send(){
     this.createLoading();
-    this.sightingData.date = Date();
     this.firebase.addSighting(this.sightingData).then(success => {
       this.loading.dismiss();
       this.navCtrl.popToRoot(); 
@@ -62,7 +88,7 @@ export class ReportSightingPage {
 
   createLoading(){
     this.loading = this.loadingCtrl.create({
-      content: 'Loading...'
+      content: this.language.english ? 'Loading...' : 'Cargando...'
     });
     this.loading.present();    
   }
@@ -74,7 +100,7 @@ export class ReportSightingPage {
       this.loading.dismiss();  
       if(data.json().results.length){
         this.sightingData.location = data.json().results[0].address_components[0].long_name;        
-      } else this.sightingData.location = "Point on map";
+      } else this.sightingData.location = "";
     },
     err => {
       this.loading.dismiss();            
@@ -90,41 +116,67 @@ export class ReportSightingPage {
 
   chooseLocation(){
     let alert = this.alertCtrl.create();
-    alert.setTitle('Select location');
+    alert.setTitle(this.language.english ? 'Select location' : 'Seleccionar ubicación');
 
     alert.addInput({
       type: 'radio',
-      label: 'Use my location',
+      label: this.language.english ? 'Use my location' : 'Usa mi ubicación',
       value: 'gps',
       checked: true
     });
 
     alert.addInput({
       type: 'radio',
-      label: 'Enter lat/lng',
+      label: this.language.english ? 'Choose on map' : 'Elige en el mapa',
+      value: 'map'
+    });
+
+    alert.addInput({
+      type: 'radio',
+      label: this.language.english ? 'Enter lat/lng' : 'Ingresar coordenadas',
       value: 'latlon'
     });
 
-    alert.addButton('Cancel');
+    alert.addButton(this.language.english ? 'Cancel' : 'Cancelar');
     alert.addButton({
       text: 'OK',
       handler: data => {
-        if(data == 'gps'){
-          this.createLoading();          
-          this.geolocation.getCurrentPosition().then((resp) => {
-            this.sightingData.lat = resp.coords.latitude.toString();
-            this.sightingData.lng = resp.coords.longitude.toString();
-            this.getAddress();
-          }).catch((error) => {
-            this.loading.dismiss();
-            let alert = this.alertCtrl.create({
-              title: 'Error',
-              subTitle: "We couldn't find your location",
-              buttons: ['OK']
+        
+        switch(data){
+          case 'gps':
+            this.createLoading();          
+            this.geolocation.getCurrentPosition().then((resp) => {
+              this.sightingData.lat = resp.coords.latitude.toString();
+              this.sightingData.lng = resp.coords.longitude.toString();
+              this.getAddress();
+            }).catch((error) => {
+              this.loading.dismiss();
+              let alert = this.alertCtrl.create({
+                title: 'Error',
+                subTitle: "We couldn't find your location",
+                buttons: ['OK']
+              });
+              alert.present();
             });
-            alert.present();
-          });
-        } else this.enterLatlng();
+            break;
+
+          case 'map':
+            let modal = this.modalCtrl.create(LocationPickerPage);
+            modal.onDidDismiss(data => {
+              if(data){
+                this.sightingData.lat = data.lat;
+                this.sightingData.lng = data.lng;
+                this.sightingData.location = data.location;
+              }
+            });
+            modal.present();
+            break;
+
+          case 'latlon':
+            this.enterLatlng();
+            break;
+        }
+
       }
     });
     alert.present();
@@ -132,7 +184,7 @@ export class ReportSightingPage {
 
   enterLatlng(){
     let prompt = this.alertCtrl.create({
-      title: 'Enter lat/lng',
+      title: this.language.english ? 'Enter lat/lng' : 'Ingresar coordenadas',
       inputs: [
         {
           name: 'Lat',
@@ -147,7 +199,7 @@ export class ReportSightingPage {
       ],
       buttons: [
         {
-          text: 'Cancel',
+          text: this.language.english ? 'Cancel' : 'Cancelar',
           handler: data => {
             this.sightingData.lat = "";
             this.sightingData.lng = ""
@@ -170,17 +222,17 @@ export class ReportSightingPage {
   getPic(){
   
       let confirm = this.alertCtrl.create({
-        title: 'Get picture from camera or gallery?',
+        title: this.language.english ? 'Get picture from camera or gallery?' : 'Fuente de la imagen',
         buttons: [
           {
-            text: 'Gallery',
+            text: this.language.english ? 'Gallery' : 'Galería',
             handler: () => {
               this.options.sourceType = this.camera.PictureSourceType.PHOTOLIBRARY;
               this.takePic()
             }
           },
           {
-            text: 'Camera',
+            text: this.language.english ? 'Camera' : 'Cámara',
             handler: () => {
               this.options.sourceType = this.camera.PictureSourceType.CAMERA;
               this.takePic()
@@ -193,7 +245,7 @@ export class ReportSightingPage {
     }
   
     takePic(){
-      this.camera.getPicture(this.options).then((imageData) => {
+      this.camera.getPicture(this.options).then(imageData => {
         this.picture = 'data:image/jpeg;base64,'+imageData;
         this.sightingData.img = 'data:image/jpeg;base64,'+imageData;        
         }, (err) => {

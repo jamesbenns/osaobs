@@ -3,6 +3,11 @@ page-sighting-detail {
     .gm-style-cc{
         display: none;
     }
+
+    #map iframe + div {
+        display: none;
+    }
+    
     #map {
         width: 100%;
         height: 100%;

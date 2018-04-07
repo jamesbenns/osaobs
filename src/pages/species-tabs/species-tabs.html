@@ -1,0 +1,9 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>{{language.english ? species.name : species.spanishName}}</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-tabs tabsLayout="icon-end" color="primary">
+    <ion-tab [root]="infoRoot" [rootParams]="species" tabTitle="Info" tabIcon="book"></ion-tab>
+    <ion-tab [root]="sightingsRoot" [rootParams]="species.name" [tabTitle]="language.english ? 'Sightings' : 'Avistamientos'" tabIcon="eye" tabsHideOnSubPages="true"></ion-tab>
+</ion-tabs>

@@ -1,0 +1,15 @@
+<ion-content>
+    <ion-nav #myNav [root]="rootPage"></ion-nav>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar color="danger">
+    <ion-title>{{ myNav.getActive() && myNav.getActive().instance.selected ? ( language.english ? myNav.getActive().instance.selected.name : myNav.getActive().instance.selected.spanishName ) : ( language.english ? 'Unknown' : 'Desconocido')}} {{ language.english ? 'selected' : 'seleccionado'}}</ion-title>
+    <ion-buttons end icon-right>
+      <button ion-button (click)="dismiss()">
+        {{language.english ? "Done" : "Hecho"}}
+        <ion-icon name="checkmark"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

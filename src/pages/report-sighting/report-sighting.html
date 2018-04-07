@@ -7,7 +7,7 @@
 <ion-header>
   
     <ion-navbar color="danger">
-      <ion-title>Report Sighting</ion-title>
+      <ion-title>{{language.english ? "Report Sighting" : "Reportar avistamiento"}}</ion-title>
     </ion-navbar>
   
   </ion-header>
@@ -18,16 +18,21 @@
     <ion-grid no-padding>
       <ion-row justify-content-center align-items-center style="flex: 1;">
         <ion-col col-sm-6 col-md-4>
-            <ion-card style="border-radius: 10px;">
+            <ion-card style="border-radius: 5px;">
                 
-              <div padding style="border-radius: 10px;">
-                <button ion-button color="light">Select Species</button>      
+              <div padding style="border-radius: 5px;">
+                <button ion-button color="light" (click)="selectSpecies()">{{sightingData.species ? ( language.english ? sightingData.species : sightingData.spanishSpecies ) : ( language.english ? 'Select Species' : 'Seleccionar especies')}}</button>      
               </div>
               
               <div (click)="getPic()" class="image" [ngStyle]="{backgroundImage: 'url(' + picture + ')'}"></div>
+
               <ion-item>
-                <span item-left>Just now</span>
-                <span (click)="chooseLocation()" item-right style="color: #488aff;"><ion-icon color="primary" name="pin"></ion-icon> {{ sightingData.location || "Select location" }}</span>                
+                <ion-datetime style="padding: 0;" displayFormat="DD/MM/YYYY" min="2018" [max]="today" [(ngModel)]="sightingData.date">
+                </ion-datetime>
+                <button (click)="chooseLocation()" ion-button clear item-end icon-left>
+                  <ion-icon name="pin"></ion-icon>
+                  {{ (sightingData.lat && sightingData.lng) ? sightingData.location : ( language.english ? "Select location" : "Seleccionar ubicación") }}
+                </button>          
               </ion-item>
       
             </ion-card>
@@ -40,8 +45,8 @@
   <ion-footer>
     <ion-toolbar color="danger">
       <ion-buttons end>
-        <button ion-button icon-right color="royal" (click)="send()">
-          Send
+        <button ion-button icon-right color="royal" (click)="send()" [disabled]="(!sightingData.lat || !sightingData.lng) || (!sightingData.img && !sightingData.species)">
+          {{language.english ? "Send" : "Enviar"}}
           <ion-icon name="arrow-forward"></ion-icon>
         </button>
       </ion-buttons>

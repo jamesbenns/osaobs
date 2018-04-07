@@ -1,39 +1,67 @@
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { NativeStorage } from '@ionic-native/native-storage';
 
 import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
+import { SpeciesGuidePage } from '../pages/species-guide/species-guide';
+import { ReportSightingPage } from '../pages/report-sighting/report-sighting';
+import { MySightingsPage } from '../pages/my-sightings/my-sightings';
+import { LanguageProvider } from '../providers/language/language';
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
+
   @ViewChild(Nav) nav: Nav;
 
   rootPage: any = HomePage;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
+  constructor(
+    public platform: Platform,
+    public statusBar: StatusBar,
+    private iab: InAppBrowser,
+    public language: LanguageProvider,
+    private storage: NativeStorage
+  ){
     this.initializeApp();
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
+      this.language.getLanguage();
       this.statusBar.styleDefault();
-      this.splashScreen.hide();
     });
+  }
+
+  openLink(url){
+    this.iab.create(url, '_self', 'location=no');
   }
 
   onHomePage(){
     if(this.nav.canGoBack()) {return false} else return true
   }
 
-  openPage(page) {
-    // Reset the content nav to have just this page
-    // we wouldn't want the back button to show in this scenario
-    this.nav.setRoot(page.component);
+  openSpeciesGuide(){
+    this.nav.push(SpeciesGuidePage);
   }
+
+  openMySightings(){
+    this.nav.push(MySightingsPage);
+  }
+
+  reportSighting(){
+    this.nav.push(ReportSightingPage);
+  }
+
+  saveLanguage(){
+    this.storage.setItem('language', { english: this.language.english })
+    .then(
+      () => console.log('Stored item!'),
+      error => console.error('Error storing item', error)
+    );
+  }
+  
 }

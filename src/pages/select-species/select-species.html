@@ -1,0 +1,24 @@
+<ion-header>
+
+  <ion-navbar color="danger">
+    <ion-title>{{ title }}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <ion-list radio-group [(ngModel)]="selected">
+    <button class="sub-cat" [navPush]="subCategoryPage" [navParams]="{subCategory: category}" ion-item *ngFor="let category of categories">
+      {{ language.english ? category.name : category.spanishName }}
+    </button>  
+    <ion-item *ngFor="let item of species" [navPush]="speciesTabsPage" [navParams]="item">
+      <div item-start class="square-image" [ngStyle]="{backgroundImage: 'url(' + item.photo + ')'}"></div>
+      <ion-label>
+        <h2>{{ language.english ? item.name : item.spanishName }}</h2>
+        <h3>{{ item.binomialName }}</h3>
+      </ion-label>
+      <ion-radio [value]="item"></ion-radio>
+    </ion-item>  
+  </ion-list>
+</ion-content>

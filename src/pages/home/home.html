@@ -1,11 +1,11 @@
 <ion-content>
-  <ion-fab top righter>
+  <ion-fab top right>
     <button (click)="report()" ion-fab color="danger"><ion-icon name="add"></ion-icon></button>
   </ion-fab>
 
-  <ion-fab top right>
+  <!-- <ion-fab top right>
     <button ion-fab menuToggle="right"><ion-icon name="options"></ion-icon></button>
-  </ion-fab>
+  </ion-fab> -->
 
   <ion-fab top left>
     <button ion-fab color="light" menuToggle="left"><ion-icon name="menu"></ion-icon></button>
@@ -15,23 +15,27 @@
   <div style="height: 100%; width: 30px; position: absolute; top: 0px;"></div>
 
 
-<ion-grid no-padding>
-  <ion-row>
-
-      <ion-col col-12 col-md-6 col-lg-4 *ngFor="let item of data | toArray">
-          <ion-card style="border-radius: 10px;">
-            <ion-item (click)="viewSighting(item)">
-              <h1>{{item.species}}</h1><ion-icon name="arrow-forward" item-end></ion-icon>
-            </ion-item>
-            <div *ngIf="item.img" class="image" (click)="photoViewer.show(item.img, item.species + ' spotted near ' + item.location)" [ngStyle]="{backgroundImage: 'url(' + item.img + ')'}"></div>
-            <ion-item (click)="viewSighting(item)">
-              <span item-left>{{item.date | timeAgo}}</span>
-              <span item-right style="color: #488aff;"><ion-icon color="primary" name="pin"></ion-icon> {{item.location}}</span>
-            </ion-item>
-          </ion-card>  
-      </ion-col>  
-
-  </ion-row>
-</ion-grid>
+  <ion-grid no-padding>
+    <ion-row style="padding-bottom: 30px;">
+        <ion-col col-12 col-md-6 col-lg-4 *ngFor="let item of sightings">
+            <ion-card style="border-radius: 5px;" [navPush]="sightingDetail" [navParams]="item">
+              <ion-item>
+                <h1>{{item.species ? (language.english ? item.species : item.spanishSpecies) : (language.english ? 'Unidentified' : 'No identificado')}}</h1><ion-icon name="arrow-forward" item-end></ion-icon>
+              </ion-item>
+              <div *ngIf="item.img" class="image" [ngStyle]="{backgroundImage: 'url(' + item.img + ')'}"></div>
+              <ion-item>
+                <span item-left>{{item.date | timeAgo}}</span>
+                <button ion-button clear item-end icon-left>
+                    <ion-icon name="pin"></ion-icon>
+                    {{item.location ? item.location : 'Costa Rica'}}
+                  </button>
+                </ion-item>
+            </ion-card>  
+        </ion-col>
+        <ion-infinite-scroll [enabled]="scrollEnabled" (ionInfinite)="getMore($event)">
+          <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+    </ion-row>
+  </ion-grid>
 
 </ion-content>

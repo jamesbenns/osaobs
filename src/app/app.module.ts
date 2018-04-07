@@ -4,32 +4,51 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
+import { SpeciesGuidePage } from '../pages/species-guide/species-guide';
 import { ReportSightingPage } from '../pages/report-sighting/report-sighting';
 import { SightingDetailPage } from '../pages/sighting-detail/sighting-detail';
+import { SpeciesTabsPage } from '../pages/species-tabs/species-tabs';
+import { SpeciesModalPage } from '../pages/species-modal/species-modal';
+import { SelectSpeciesPage } from '../pages/select-species/select-species';
+import { InfoTabPage } from '../pages/info-tab/info-tab';
+import { SightingsTabPage } from '../pages/sightings-tab/sightings-tab';
+import { LocationPickerPage } from '../pages/location-picker/location-picker';
+import { MySightingsPage } from '../pages/my-sightings/my-sightings';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Camera } from '@ionic-native/camera';
 import { PhotoViewer } from '@ionic-native/photo-viewer';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { SocialSharing } from '@ionic-native/social-sharing';
+import { NativeStorage } from '@ionic-native/native-storage';
+import { Device } from '@ionic-native/device';
 
 import { FirebaseProvider } from '../providers/firebase/firebase';
+import { LanguageProvider } from '../providers/language/language';
 
 import { HttpModule } from '@angular/http';
 
 import { PipesModule } from '../pipes/pipes.module';
-import {TimeAgoPipe} from 'time-ago-pipe'
+import { TimeAgoPipe } from 'time-ago-pipe'
 
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    ListPage,
     ReportSightingPage,
     SightingDetailPage,
-    TimeAgoPipe   
+    SpeciesGuidePage,
+    SpeciesModalPage,
+    SpeciesTabsPage,
+    SelectSpeciesPage,
+    TimeAgoPipe,
+    SightingsTabPage,
+    LocationPickerPage,
+    InfoTabPage,
+    MySightingsPage
   ],
   imports: [
     BrowserModule,
@@ -41,18 +60,33 @@ import {TimeAgoPipe} from 'time-ago-pipe'
   entryComponents: [
     MyApp,
     HomePage,
-    ListPage,
     ReportSightingPage,
-    SightingDetailPage
+    SpeciesModalPage,
+    SightingDetailPage,
+    SpeciesGuidePage,
+    SpeciesTabsPage,
+    SelectSpeciesPage,
+    SightingsTabPage,
+    LocationPickerPage,
+    InfoTabPage,
+    MySightingsPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
     PhotoViewer,
+    InAppBrowser,
+    SocialSharing,
+    NativeStorage,
+    Device,
     Geolocation,
     Camera,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    {
+      provide: ErrorHandler,
+      useClass: IonicErrorHandler
+    },
     FirebaseProvider,
+    LanguageProvider,
   ]
 })
 export class AppModule {}

@@ -1,6 +1,9 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { PhotoViewer } from '@ionic-native/photo-viewer';
+import { SpeciesTabsPage } from '../species-tabs/species-tabs';
+import { SocialSharing } from '@ionic-native/social-sharing';
+import { LanguageProvider } from '../../providers/language/language';
 
 declare var google;
 
@@ -14,7 +17,7 @@ export class SightingDetailPage {
 
   map: any;
   data: any;
-
+  speciesTabsPage = SpeciesTabsPage;
   item: any;
 
   ionViewDidLoad(){
@@ -70,8 +73,18 @@ export class SightingDetailPage {
 
   }
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public photoViewer: PhotoViewer) {
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public photoViewer: PhotoViewer,
+    private share: SocialSharing,
+    public language: LanguageProvider
+  ){
     this.item = this.navParams.data;
+  }
+
+  shareItem(){
+    this.share.share(`${this.item.species ? this.item.species : 'Unknown species'} seen in ${this.item.location ? this.item.location : 'Costa Rica'}! Get the OSA Ecology app.`, `Seen on OSA Ecology app`, this.item.img, "https://www.osaecology.org")
   }
 
 }

@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title></ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <p style="text-align: center; padding: 20px;" *ngIf="!sightings.length">{{language.english ? "no sightings" : "Sin avistamientos"}}</p>
+  <ion-grid no-padding>
+    <ion-row style="padding-bottom: 30px; padding-top: 15px;">
+        <ion-col col-12 col-md-6 col-lg-4 *ngFor="let item of sightings">
+            <ion-card style="border-radius: 5px;" (click)="goToSighting(item)">
+              <ion-item>
+                <h1>{{item.species ? (language.english ? item.species : item.spanishSpecies) : (language.english ? 'Unidentified' : 'No identificado')}}</h1><ion-icon name="arrow-forward" item-end></ion-icon>
+              </ion-item>
+              <div *ngIf="item.img" class="image" [ngStyle]="{backgroundImage: 'url(' + item.img + ')'}"></div>
+              <ion-item>
+                <span item-left>{{item.date | timeAgo}}</span>
+                <button ion-button clear item-end icon-left>
+                    <ion-icon name="pin"></ion-icon>
+                    {{item.location}}
+                  </button>
+                </ion-item>
+            </ion-card>  
+        </ion-col>  
+    </ion-row>
+  </ion-grid>
+</ion-content>

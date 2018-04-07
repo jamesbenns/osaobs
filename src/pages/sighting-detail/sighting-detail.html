@@ -20,16 +20,23 @@
     </ion-row>
     <ion-row>
       <ion-col col-12 col-md-6 col-lg-4>
-          <ion-card style="border-radius: 10px;">
-            <ion-item>
-              <h1>{{item.species}}</h1>
-            </ion-item>
-            <div *ngIf="item.img" class="image" (click)="photoViewer.show(item.img, item.species + ' spotted near ' + item.location)" [ngStyle]="{backgroundImage: 'url(' + item.img + ')'}"></div>
-            <ion-item>
-              <span item-left>{{item.date | timeAgo}}</span>
-              <span item-right style="color: #488aff;"><ion-icon color="primary" name="pin"></ion-icon> {{item.location}}</span>
-            </ion-item>
-          </ion-card>  
+        <ion-card style="border-radius: 5px;">
+          <ion-item>
+            <h1 [navPush]="speciesTabsPage" [navParams]="{ name: item.species }">{{item.species ? (language.english ? item.species : item.spanishSpecies) : (language.english ? 'Unidentified' : 'No identificado')}}</h1>
+            <button *ngIf="item.species" ion-button clear item-end icon-right [navPush]="speciesTabsPage" [navParams]="{ name: item.species }">
+              {{language.english ? "more" : "más"}}
+              <ion-icon name="arrow-forward"></ion-icon>
+            </button>
+          </ion-item>
+          <div *ngIf="item.img" class="image" (click)="photoViewer.show(item.img, item.species + ' spotted near ' + item.location, {share: false})" [ngStyle]="{backgroundImage: 'url(' + item.img + ')'}"></div>
+          <ion-item>
+            <span item-left>{{item.date | timeAgo}}</span>
+            <button ion-button clear item-end icon-left (click)="shareItem()">
+              <ion-icon name="md-share"></ion-icon>
+              {{language.english ? "share" : "compartir"}}
+            </button>
+          </ion-item>
+        </ion-card>  
       </ion-col>  
     </ion-row>
   </ion-grid>
