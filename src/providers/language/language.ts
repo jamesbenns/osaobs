@@ -11,7 +11,7 @@ export class LanguageProvider {
   ){}
 
   getLanguage(){
-    this.storage.getItem('language').then(
+    return this.storage.getItem('language').then(
       data => {
         this.english = data.english
       },
@@ -20,6 +20,10 @@ export class LanguageProvider {
         this.english = true;
       }
     );
+  }
+
+  setLanguage(){
+    this.storage.setItem('language', { english: this.english });
   }
 
 }

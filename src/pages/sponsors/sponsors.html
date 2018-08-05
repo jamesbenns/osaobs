@@ -1,0 +1,20 @@
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title>Sponsors</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let sponsor of sponsors">
+      <ion-thumbnail item-start>
+        <img [src]="sponsor.logo">
+      </ion-thumbnail>
+      <h2>{{sponsor.name}}</h2>
+      <button ion-button clear item-end (click)="openLink(sponsor.website)">view</button>
+    </ion-item>
+  </ion-list>
+</ion-content>

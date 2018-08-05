@@ -6,8 +6,8 @@ import { Http } from '@angular/http';
 import { FirebaseProvider } from '../../providers/firebase/firebase';
 import { SpeciesModalPage } from '../species-modal/species-modal';
 import { LocationPickerPage } from '../location-picker/location-picker';
-import { Device } from '@ionic-native/device';
 import { LanguageProvider } from '../../providers/language/language';
+import { UserProvider } from '../../providers/user/user';
 
 @Component({
   selector: 'page-report-sighting',
@@ -25,7 +25,7 @@ export class ReportSightingPage {
     public loadingCtrl: LoadingController,
     public firebase: FirebaseProvider,
     public modalCtrl: ModalController,
-    private device: Device,
+    private userService: UserProvider,
     public language: LanguageProvider
   ) {}
 
@@ -47,7 +47,7 @@ export class ReportSightingPage {
     date: new Date().toISOString(),
     location: "",
     spanishSpecies: "",
-    uuid: this.device.uuid
+    uid: this.userService.user.uid
   }
 
   picture:string = "./assets/img/placeholder.png";  

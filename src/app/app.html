@@ -14,19 +14,23 @@
                 {{language.english ? "Species guide" : "Guía de especies"}}
                 <ion-icon name="information-circle" item-end></ion-icon>
             </button>
-            <button ion-item (click)="openMySightings()">
+            <button ion-item (click)="openMySightings()" *ngIf="userService.user">
                 {{language.english ? "My sightings" : "mis avistamientos"}}
-                <ion-icon name="contact" item-end></ion-icon>
+                <ion-icon name="eye" item-end></ion-icon>
             </button>
 
             <button ion-item (click)="openLink('https://www.facebook.com/osaecology/')">
                 {{ language.english ? "Find us on Facebook" : "Síguenos en Facebook"}}
                 <ion-icon name="logo-facebook" style="color: #3b5998;" item-end></ion-icon>
             </button>
-            <!-- <button ion-item (click)="openLink('https://www.instagram.com/osaecology')">
+            <button ion-item (click)="openLink('https://www.instagram.com/osaecology')">
                 Find us on Instagram
                 <ion-icon name="logo-instagram" style="color: #d32e87;" item-end></ion-icon>
-            </button> -->
+            </button>
+            <button ion-item (click)="openSponsors()">
+                Collaborators
+                <ion-icon name="heart" style="color: red;" item-end></ion-icon>
+            </button>
             <ion-item-divider color="light">
                 {{language.english ? "Language" : "Idioma"}}
             </ion-item-divider>
@@ -39,14 +43,22 @@
                 <ion-radio [value]="false"></ion-radio>
             </ion-item>
       </ion-list>
-      <ion-grid padding style="position: absolute; bottom: 0;">                
-        <button ion-button color="danger" icon-right (click)="reportSighting()">
-            {{language.english ? "Report sighting" : "Enviar avistamiento"}}
-            <ion-icon name="camera"></ion-icon>
-        </button>
-        <button ion-button style="color: #012268;" color="secondary" (click)="openLink('https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=osaecology%40Gmail%2ecom&lc=GB&item_name=OSA%20Ecology&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHostedGuest')">
-            {{language.english ? "Donate with" : "Donar con"}} <img style="height: 15px; margin-left: 10px;" src="./assets/img/paypal.png"/>
-        </button>
+        <ion-grid padding>
+            <button ion-button style="color: #012268;" color="secondary" (click)="openLink('https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=osaecology%40Gmail%2ecom&lc=GB&item_name=OSA%20Ecology&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHostedGuest')">
+                {{language.english ? "Donate with" : "Donar con"}} <img style="height: 15px; margin-left: 10px;" src="./assets/img/paypal.png"/>
+            </button>             
+            <button ion-button color="danger" icon-right (click)="reportSighting()">
+                {{language.english ? "Report sighting" : "Enviar avistamiento"}}
+                <ion-icon name="camera"></ion-icon>
+            </button>      
+            <button ion-button color="primary" icon-right (click)="userService.logout()" *ngIf="userService.user">
+                {{language.english ? "logout" : "logout"}}
+                <ion-icon name="person"></ion-icon>
+            </button>
+            <button ion-button color="primary" icon-right (click)="openLoginPage()" *ngIf="!userService.user">
+                {{language.english ? "login/signup" : "iniciar sesión"}}
+                <ion-icon name="person"></ion-icon>
+            </button>  
         </ion-grid>
   </ion-content>
 </ion-menu>

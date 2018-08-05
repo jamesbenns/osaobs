@@ -5,6 +5,11 @@ import { ReportSightingPage } from '../../pages/report-sighting/report-sighting'
 import { SightingDetailPage } from '../../pages/sighting-detail/sighting-detail';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { LanguageProvider } from '../../providers/language/language';
+import { UserProvider } from '../../providers/user/user';
+import { LoginPage } from '../../pages/login/login'
+import { AlertController } from 'ionic-angular';
+import { Platform } from 'ionic-angular';
+
 
 declare var google;
 
@@ -21,9 +26,11 @@ export class HomePage {
   sightings = [];
   allSightings = [];
   sightingDetail = SightingDetailPage;
+  connectionTimeout;
   
   ionViewDidLoad(){
     this.loadMap();
+    this.loadData();
     this.splashScreen.hide();
   }
 
@@ -31,18 +38,48 @@ export class HomePage {
     this.navCtrl.push(this.sightingDetail, item);
   }
 
-  constructor(public navCtrl: NavController, public firebase: FirebaseProvider, private splashScreen: SplashScreen, public language: LanguageProvider) {
+  connectionAlert(){
+    const alert = this.alertCtrl.create({
+      title: this.language.english ? 'No connection!' : 'sin conexión',
+      subTitle: this.language.english ? 'This app requires an internet connection' : 'Esta aplicación requiere una conexión a internet',
+      buttons: [
+        {
+          text: 'OK',
+          role: 'cancel',
+          handler: () => {
+            this.platform.exitApp();
+          }
+        }
+      ]    });
+    alert.present();
+  }
+
+  constructor(
+    public navCtrl: NavController,
+    public firebase: FirebaseProvider,
+    private splashScreen: SplashScreen,
+    public language: LanguageProvider,
+    public userService: UserProvider,
+    private alertCtrl: AlertController,
+    private platform: Platform
+  ) {
+    this.firebase.database.ref(".info/connected").on("value", snap => {
+      if (snap.val() === true) {
+        clearTimeout(this.connectionTimeout);
+      } else {
+        this.connectionTimeout = setTimeout(()=>{ this.connectionAlert() }, 5000);
+      }
+    });
   }
 
   getMore(event){
     this.sightings = this.sightings.concat( this.allSightings.slice(this.sightings.length, this.sightings.length + 5) );
     if(this.sightings.length === this.allSightings.length) this.scrollEnabled = false;
     event.complete();
-    console.log(this.allSightings.slice(this.sightings.length, this.sightings.length + 5));
   }
 
   report(){
-    this.navCtrl.push(ReportSightingPage)
+    this.navCtrl.push(this.userService.user ? ReportSightingPage : LoginPage);
   }
 
   ionViewDidEnter(){
@@ -50,10 +87,10 @@ export class HomePage {
   }
 
   loadMap(){
-    
-       let latLng = new google.maps.LatLng(9.927158, -84.092403);
-    
-       let mapOptions = {
+
+       const latLng = new google.maps.LatLng(9.927158, -84.092403)
+
+       const mapOptions = {
          center: latLng,
          zoom: 7,
          minZoom: 7,
@@ -87,7 +124,7 @@ export class HomePage {
     
        this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
 
-       let strictBounds = new google.maps.LatLngBounds(
+       const strictBounds = new google.maps.LatLngBounds(
           new google.maps.LatLng(7.084093, -86.000020),
           new google.maps.LatLng(11.568225, -82.242378)
        );
@@ -112,19 +149,25 @@ export class HomePage {
   
            this.map.setCenter(new google.maps.LatLng(y, x));
        });
-
-        this.firebase.database.ref('sightings/').limitToLast(100).on('value', data => {
-          this.data = data.val();
-          this.allSightings = [];
-          this.sightings = [];
-          for (let key in this.data) {
-            this.allSightings.unshift(this.data[key]);
-          }
-          this.sightings = this.allSightings.slice(0,4);
-          this.scrollEnabled = true;
-          this.addMarkers();
-        });
    
+     }
+
+     loadData(){
+      this.firebase.database.ref('sightings/').limitToLast(100).on('value', data => {
+        this.data = data.val();
+        this.applyData();
+      });
+     }
+
+     applyData(){
+      this.addMarkers();
+      this.allSightings = [];
+      this.sightings = [];
+      for (let key in this.data) {
+        this.allSightings.unshift(this.data[key]);
+      }
+      this.sightings = this.allSightings.slice(0,4);
+      this.scrollEnabled = true;
      }
 
      openWindow:any;

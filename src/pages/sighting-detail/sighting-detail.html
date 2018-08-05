@@ -18,8 +18,8 @@
       <div #map id="map"></div>
       <div style="height: 100%; width: 30px; position: absolute; top: 0px;"></div>      
     </ion-row>
-    <ion-row>
-      <ion-col col-12 col-md-6 col-lg-4>
+    <ion-row justify-content-center	>
+      <ion-col col-12 col-sm-9 col-md-6 col-lg-4>
         <ion-card style="border-radius: 5px;">
           <ion-item>
             <h1 [navPush]="speciesTabsPage" [navParams]="{ name: item.species }">{{item.species ? (language.english ? item.species : item.spanishSpecies) : (language.english ? 'Unidentified' : 'No identificado')}}</h1>

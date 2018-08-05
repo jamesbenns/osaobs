@@ -1,0 +1,61 @@
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-segment color="light" [(ngModel)]="tab">
+      <ion-segment-button value="signup">
+        Signup
+      </ion-segment-button>
+      <ion-segment-button value="login">
+        Login
+      </ion-segment-button>
+    </ion-segment>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <div *ngIf="tab === 'signup'">
+    <ion-list>
+      <ion-item>
+        <ion-label floating>{{language.english ? 'email address' : 'correo electronico'}}</ion-label>
+        <ion-input #email type="email" required></ion-input>
+      </ion-item>
+    
+      <ion-item>
+        <ion-label floating>{{language.english ? 'password' : 'contraseña'}}</ion-label>
+        <ion-input #password type="password" required></ion-input>
+      </ion-item>
+    
+      <ion-item>
+        <ion-label floating>{{language.english ? 'confirm password' : 'confirmar contraseña'}}</ion-label>
+        <ion-input #confirm type="password" required></ion-input>
+      </ion-item>
+    
+    </ion-list>
+    <div padding>
+      <button ion-button block large [disabled]="(!email.value || !password.value) || password.value !== confirm.value" (click)="signUp(email.value, password.value)">{{language.english ? 'signup' : 'registrar'}}</button>
+    </div>
+    <div padding>
+      <p text-center>Sign up to report sightings and receive important updates!</p>
+    </div>
+  </div>
+  <div *ngIf="tab === 'login'">
+    <ion-list>
+
+      <ion-item>
+        <ion-label floating>{{language.english ? 'email address' : 'correo electronico'}}</ion-label>
+        <ion-input #email type="email" value=""></ion-input>
+      </ion-item>
+    
+      <ion-item>
+        <ion-label floating>{{language.english ? 'password' : 'contraseña'}}</ion-label>
+        <ion-input #password type="password"></ion-input>
+      </ion-item>
+    
+    </ion-list>
+    <div padding>
+      <button ion-button block large [disabled]="!email.value || !password.value" (click)="login(email.value, password.value)">{{language.english ? 'login' : 'entrar'}}</button>
+    </div>
+  </div>
+</ion-content>

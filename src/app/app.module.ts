@@ -23,7 +23,6 @@ import { PhotoViewer } from '@ionic-native/photo-viewer';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { NativeStorage } from '@ionic-native/native-storage';
-import { Device } from '@ionic-native/device';
 
 import { FirebaseProvider } from '../providers/firebase/firebase';
 import { LanguageProvider } from '../providers/language/language';
@@ -32,6 +31,9 @@ import { HttpModule } from '@angular/http';
 
 import { PipesModule } from '../pipes/pipes.module';
 import { TimeAgoPipe } from 'time-ago-pipe'
+import { LoginPage } from '../pages/login/login';
+import { UserProvider } from '../providers/user/user';
+import { SponsorsPage } from '../pages/sponsors/sponsors';
 
 
 @NgModule({
@@ -48,7 +50,9 @@ import { TimeAgoPipe } from 'time-ago-pipe'
     SightingsTabPage,
     LocationPickerPage,
     InfoTabPage,
-    MySightingsPage
+    MySightingsPage,
+    LoginPage,
+    SponsorsPage
   ],
   imports: [
     BrowserModule,
@@ -69,7 +73,9 @@ import { TimeAgoPipe } from 'time-ago-pipe'
     SightingsTabPage,
     LocationPickerPage,
     InfoTabPage,
-    MySightingsPage
+    MySightingsPage,
+    LoginPage,
+    SponsorsPage
   ],
   providers: [
     StatusBar,
@@ -78,7 +84,6 @@ import { TimeAgoPipe } from 'time-ago-pipe'
     InAppBrowser,
     SocialSharing,
     NativeStorage,
-    Device,
     Geolocation,
     Camera,
     {
@@ -87,6 +92,7 @@ import { TimeAgoPipe } from 'time-ago-pipe'
     },
     FirebaseProvider,
     LanguageProvider,
+    UserProvider,
   ]
 })
 export class AppModule {}

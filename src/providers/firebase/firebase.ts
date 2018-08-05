@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
 import * as firebase from 'firebase';
+import * as cloudinary from 'cloudinary';
 
 @Injectable()
 export class FirebaseProvider {
@@ -10,10 +9,12 @@ export class FirebaseProvider {
   markers: any;
   data = {};
   storage:any;
+  auth: any;
+  connection;
 
-  constructor(public http: Http) {
+  constructor() {
     
-    let config = {
+    const config = {
       apiKey: "AIzaSyC8LqnQR4-HhO4haik-QEAt79QFosXnEbA",
       authDomain: "osaobs-6b449.firebaseapp.com",
       databaseURL: "https://osaobs-6b449.firebaseio.com",
@@ -22,40 +23,43 @@ export class FirebaseProvider {
       messagingSenderId: "770570597964"
     };
 
+    cloudinary.config({ 
+      cloud_name: 'dfssbem3h', 
+      api_key: '924727136572693', 
+      api_secret: 'dy2_I_YB2LNLoK8sUa60HFip2W8' 
+    });
+
     firebase.initializeApp(config);
     this.database = firebase.database();
     this.storage = firebase.storage();
-    
+    this.auth = firebase.auth();
 
   }
 
-  getData(){
-    return new Promise((resolve, reject) => {
-      this.database.ref('sightings/').on('value', data => {
-        this.data = data.val();
-        resolve(data.val())
-      });
-    })
+  getPhotoUrl(url){
+    const term = "/upload/";
+    const index = url.indexOf(term) + term.length;
+    return `${url.substr(0,index)}h_1000/${url.substr(index)}`;
   }
 
   addSighting(data){
-    let key = this.database.ref('sightings/').push().key; 
-    data.key = key;   
+    data.key = this.database.ref('sightings/').push().key;   
     return new Promise((resolve, reject)=>{
       if(data.img){
-        this.storage.ref().child(key).putString(data.img, 'data_url').then( snapshot => {
-          data.img = snapshot.downloadURL;
-          resolve();
-          return this.database.ref('sightings/' + key).set(data);
-        }, error => {
-          reject(error)
+
+        cloudinary.uploader.upload( data.img, result => {
+          data.img = result.secure_url;
+          resolve(this.database.ref('sightings/' + data.key).set(data));
         });
+
       } else{
-        this.database.ref('sightings/' + key).set(data).then( success => {
+
+        this.database.ref('sightings/' + data.key).set(data).then( success => {
           resolve();
         }, error => {
           reject(error);
-        })          
+        });
+
       }
     })
   }
